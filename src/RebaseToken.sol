@@ -70,7 +70,7 @@ contract RebaseToken is ERC20 {
 
     /**
      * @notice this function will calculated the balance of the user including interest that has been accumulated since last update
-     *  principal balance + some interest that has accured 
+     *  principal balance + some interest that has accured
      * @param _user the user who's balance need to be calculated
      * @return the balance of the user including any interest
      */
@@ -83,10 +83,6 @@ contract RebaseToken is ERC20 {
      * @notice this function returns the interestRate of the user
      * @param _user the user who's interest rate will be returned
      */
-
-    function getUsersInterestRate(address _user) public view returns (uint256) {
-        return s_usersInterestRate[_user];
-    }
 
     function _mintAccuredInterest(address _user) internal {
         //find the current balance of the rebase token that has been minted to the user - principal balance
@@ -111,5 +107,13 @@ contract RebaseToken is ERC20 {
         // (principalamount)+(principalAmount * user_interestRate * timeElapsed)
         uint256 timeElapsed = block.timestamp - s_usersLastUpdatedTimestamp[_user];
         linearInterest = PRECISION_FACTOR + (s_usersInterestRate[_user] * timeElapsed);
+    }
+
+    function getUsersInterestRate(address _user) public view returns (uint256) {
+        return s_usersInterestRate[_user];
+    }
+
+    function getUsersLastUpdatedTimeStamp(address _user) public view returns (uint256) {
+        return s_usersLastUpdatedTimestamp[_user];
     }
 }
