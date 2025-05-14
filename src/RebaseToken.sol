@@ -69,6 +69,17 @@ contract RebaseToken is ERC20 {
     }
 
     /**
+     * @notice this function will burn the token from the user
+     * @param _from The user to burn the token
+     * @param _amount The amount of the token to be burned
+     */
+    function burn(address _from, uint256 _amount) public {
+        if (_amount == type(uint256).max) _amount = balanceOf(_from);
+        _mintAccuredInterest(_from);
+        _burn(_from, _amount);
+    }
+
+    /**
      * @notice this function will calculated the balance of the user including interest that has been accumulated since last update
      *  principal balance + some interest that has accured
      * @param _user the user who's balance need to be calculated
@@ -86,9 +97,13 @@ contract RebaseToken is ERC20 {
 
     function _mintAccuredInterest(address _user) internal {
         //find the current balance of the rebase token that has been minted to the user - principal balance
+        uint256 previousPrincipalBalance = super.balanceOf(_user);
         // calculate their current balance including any interest -> balanceOf
+        uint256 currentBalance = balanceOf(_user);
         //calculate the number of token that needs to be minted to the user = principal balance - balanceOf
+        uint256 tokensToBeMinted = currentBalance - previousPrincipalBalance;
         //call _mint to mint the token to the user
+        _mint(_user, tokensToBeMinted);
         s_usersLastUpdatedTimestamp[_user] = block.timestamp;
     }
 
