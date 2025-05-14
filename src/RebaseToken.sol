@@ -109,10 +109,18 @@ contract RebaseToken is ERC20 {
         linearInterest = PRECISION_FACTOR + (s_usersInterestRate[_user] * timeElapsed);
     }
 
+    /**
+     * @notice this function will return the interest rate of the user
+     * @param _user the address of the user to return the interest rate
+     */
     function getUsersInterestRate(address _user) public view returns (uint256) {
         return s_usersInterestRate[_user];
     }
 
+    /**
+     * @notice this funciton will returnt the lastupdated time stamp of the user
+     * @param _user the address of the user to return the timeStamp
+     */
     function getUsersLastUpdatedTimeStamp(address _user) public view returns (uint256) {
         return s_usersLastUpdatedTimestamp[_user];
     }
