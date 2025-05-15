@@ -90,11 +90,56 @@ contract RebaseToken is ERC20 {
         //multiply the principal balance by the interest that has accumulated in the time since balance was lastUpdated
         return (super.balanceOf(_user) * _calculateUsersAccumulatedInterestSinceLastUpdate(_user)) / PRECISION_FACTOR;
     }
+
+    /**
+     * @notice this function will transfer the token from one to another user
+     * @param _to The user to trnaser the token
+     * @param _amount the amount of token to transfer
+     */
+    function transfer(address _to, uint256 _amount) public override returns (bool) {
+        _mintAccuredInterest(_to);
+        _mintAccuredInterest(msg.sender);
+        if (_amount == type(uint256).max) {
+            _amount = balanceOf(msg.sender);
+        }
+        if (balanceOf(_to) == 0) {
+            s_usersInterestRate[_to] = s_usersInterestRate[msg.sender];
+        }
+
+        return super.transfer(_to, _amount);
+    }
+
+    /**
+     * @notice this function will transfer token from one user to another
+     * @param _from the address , token will transfer from
+     * @param _to the address the token will transfer
+     * @param _amount the amount of the token to trnsfer
+     */
+    function transferFrom(address _from, address _to, uint256 _amount) public override returns (bool) {
+        _mintAccuredInterest(_from);
+        _mintAccuredInterest(_to);
+        if (_amount == type(uint256).max) {
+            _amount = balanceOf(_from);
+        }
+        if (balanceOf(_to) == 0) {
+            s_usersInterestRate[_to] = s_usersInterestRate[_from];
+        }
+        return super.transferFrom(_from, _to, _amount);
+    }
+
+    /**
+     * @notice this function will return the principal balance of the user. This function will return the token balance of the user that has been minted without any interest accured since last time the user has intracted with the protocol.
+     * @param _user the user to get the principal balance for
+     * @return the principal balance of the user
+     */
+    function principalBalanceOf(address _user) public view returns (uint256) {
+        return super.balanceOf(_user);
+    }
+
     /**
      * @notice this function returns the interestRate of the user
      * @param _user the user who's interest rate will be returned
      */
-
     function _mintAccuredInterest(address _user) internal {
         //find the current balance of the rebase token that has been minted to the user - principal balance
         uint256 previousPrincipalBalance = super.balanceOf(_user);
@@ -138,5 +183,12 @@ contract RebaseToken is ERC20 {
      */
     function getUsersLastUpdatedTimeStamp(address _user) public view returns (uint256) {
         return s_usersLastUpdatedTimestamp[_user];
+    }
+
+    /**
+     * @notice this function will return the global interest rate of the contract
+     */
+    function getInterestRate() external view returns (uitn256) {
+        return s_interestRate;
     }
 }
