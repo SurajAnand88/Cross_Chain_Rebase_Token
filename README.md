@@ -1,0 +1,1 @@
+USER is able to mint the token without depositing ETH into the vault contract 

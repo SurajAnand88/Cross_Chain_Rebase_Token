@@ -36,6 +36,7 @@ import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
  */
 contract RebaseToken is ERC20, Ownable, AccessControl {
     error RebaseToken__InterestRateCanOnlyBeDecreased(uint256, uint256);
+    error RebaseToken__InterestRateShouldNotBeZero();
 
     uint256 public constant PRECISION_FACTOR = 1e18;
     bytes32 private constant MINT_AND_BURN_ROLE = keccak256("MINT_AND_BURN_ROLE");
@@ -47,7 +48,12 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
 
     constructor() ERC20("RebaseToken", "RBT") Ownable(msg.sender) {}
 
-    function grandRole(address _account) external onlyOwner {
+    modifier notZero(uint256 _rate) {
+        if (_rate <= 0) revert RebaseToken__InterestRateShouldNotBeZero();
+        _;
+    }
+
+    function grantRole(address _account) external onlyOwner {
         _grantRole(MINT_AND_BURN_ROLE, _account);
     }
 
@@ -56,7 +62,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @param _interestRate: The new interrest rate to set
      * @dev s_interestRate can only be decreased
      */
-    function setInterestRate(uint256 _interestRate) external onlyOwner {
+    function setInterestRate(uint256 _interestRate) external onlyOwner notZero(_interestRate) {
         if (s_interestRate < _interestRate) {
             revert RebaseToken__InterestRateCanOnlyBeDecreased(s_interestRate, _interestRate);
         }
@@ -197,5 +203,9 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      */
     function getInterestRate() external view returns (uint256) {
         return s_interestRate;
+    }
+
+    function getRole() external pure returns (bytes32) {
+        return MINT_AND_BURN_ROLE;
     }
 }
