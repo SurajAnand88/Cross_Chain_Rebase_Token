@@ -208,4 +208,8 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
     function getRole() external pure returns (bytes32) {
         return MINT_AND_BURN_ROLE;
     }
+
+    function getCalculatedInterest(address _user) external view returns (uint256) {
+        return _calculateUsersAccumulatedInterestSinceLastUpdate(_user);
+    }
 }

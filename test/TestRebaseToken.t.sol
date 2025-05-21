@@ -12,8 +12,10 @@ contract TestRebaseToken is Test {
     address public OWNER = makeAddr("OWNER");
     address public USER = makeAddr("USER");
     uint256 public constant INTEREST_RATE = 5e10;
-    uint256 public constant INITIAL_MINT_AMOUNT= 200e18;
+    uint256 public constant INITIAL_MINT_AMOUNT = 200e18;
     uint256 public constant INITIAL_BURN_TOKEN = 100e18;
+    uint256 public constant PRECISION_FACTOR = 1e18;
+    uint256 public constant INTEREST_CALCULATION_TIME = 1 hours;
 
     event InterestRateSet(uint256 indexed intereseRate);
 
@@ -57,19 +59,28 @@ contract TestRebaseToken is Test {
         assertEq(true, rbt.hasRole(expecteRole, USER));
     }
 
-    function testMint() public roleGranted{
+    function testMint() public roleGranted {
         vm.startPrank(USER);
-        rbt.mint(USER,INITIAL_MINT_AMOUNT);
-        uint256 currentBalance  =rbt.balanceOf(USER);
-        console.log(currentBalance);
+        rbt.mint(USER, INITIAL_MINT_AMOUNT);
+        uint256 currentBalance = rbt.balanceOf(USER);
         assertEq(currentBalance, INITIAL_MINT_AMOUNT);
-
     }
 
-    function testBurn() public mintToken{
-        rbt.burn(USER,INITIAL_BURN_TOKEN);
+    function testBurn() public mintToken {
+        rbt.burn(USER, INITIAL_BURN_TOKEN);
         uint256 newBalance = rbt.balanceOf(USER);
-        assertEq(newBalance, (INITIAL_MINT_AMOUNT-INITIAL_BURN_TOKEN));
+        assertEq(newBalance, (INITIAL_MINT_AMOUNT - INITIAL_BURN_TOKEN));
+    }
+
+    function testCheckCalculateUsersAccumulatedInterestSinceLastUpdate() public mintToken {
+        uint256 currentTime = block.timestamp;
+        uint256 interestRate = rbt.getInterestRate();
+        uint256 futuretime = currentTime + INTEREST_CALCULATION_TIME;
+        vm.warp(futuretime);
+        uint256 expectedCalculatedInterest = (PRECISION_FACTOR + (interestRate) * (futuretime - currentTime));
+        uint256 actualCalculatedInterest = rbt.getCalculatedInterest(USER);
+        vm.stopPrank();
+        assertEq(expectedCalculatedInterest, actualCalculatedInterest);
     }
 
     modifier onlyOwner() {
@@ -83,7 +94,8 @@ contract TestRebaseToken is Test {
         vm.stopPrank();
         _;
     }
-    modifier mintToken(){
+
+    modifier mintToken() {
         vm.prank(OWNER);
         rbt.grantRole(USER);
         vm.startPrank(USER);
