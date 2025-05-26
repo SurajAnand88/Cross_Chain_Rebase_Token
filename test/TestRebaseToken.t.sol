@@ -11,6 +11,7 @@ contract TestRebaseToken is Test {
     Vault public vault;
     address public OWNER = makeAddr("OWNER");
     address public USER = makeAddr("USER");
+    address public USER2 = makeAddr("USER2");
     uint256 public constant INTEREST_RATE = 5e10;
     uint256 public constant INITIAL_MINT_AMOUNT = 200e18;
     uint256 public constant INITIAL_BURN_TOKEN = 100e18;
@@ -25,6 +26,13 @@ contract TestRebaseToken is Test {
         vm.prank(msg.sender);
         rbt.transferOwnership(OWNER);
         vm.deal(USER, 100 ether);
+    }
+
+    function testCheckBalance() public mintToken {
+        uint256 u1B = rbt.balanceOf(USER);
+        uint256 u2B = rbt.balanceOf(USER2);
+        console.log(u1B);
+        console.log(u2B);
     }
 
     function testNameAndSymbol() public view {
@@ -83,6 +91,44 @@ contract TestRebaseToken is Test {
         assertEq(expectedCalculatedInterest, actualCalculatedInterest);
     }
 
+    function testTestVaultDeposite(uint256 amount) public roleGranted {
+        amount = bound(amount, 1e5, type(uint24).max);
+
+        //deposite into the vault
+        vm.startPrank(USER);
+        vault.deposite{value: amount}();
+
+        //check the balance of the user
+        uint256 startingBalance = rbt.balanceOf(USER);
+        vm.warp(block.timestamp + INTEREST_CALCULATION_TIME);
+
+        uint256 midBalance = rbt.balanceOf(USER);
+        vm.warp(block.timestamp + INTEREST_CALCULATION_TIME);
+
+        uint256 endBalance = rbt.balanceOf(USER);
+
+        assertEq(startingBalance, amount);
+        assertGt(midBalance, startingBalance);
+        assertGt(endBalance, midBalance);
+        assertApproxEqAbs(endBalance - midBalance, midBalance - startingBalance, 1);
+        vm.stopPrank();
+    }
+
+    function testVaultRedeem(uint256 amount) public roleGranted {
+        amount = bound(amount, 1e5, type(uint24).max);
+
+        vm.startPrank(USER);
+        vault.deposite{value: amount}();
+
+        uint256 preBalance = rbt.balanceOf(USER);
+        assertEq(preBalance, amount);
+        vault.redeem(amount);
+        uint256 userBalance = rbt.balanceOf(USER);
+        assertEq(userBalance, 0);
+
+        vm.stopPrank();
+    }
+
     modifier onlyOwner() {
         vm.startPrank(OWNER);
         _;
@@ -91,6 +137,7 @@ contract TestRebaseToken is Test {
     modifier roleGranted() {
         vm.startPrank(OWNER);
         rbt.grantRole(USER);
+        rbt.grantRole(address(vault));
         vm.stopPrank();
         _;
     }
