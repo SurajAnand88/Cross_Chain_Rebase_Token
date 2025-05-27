@@ -152,9 +152,23 @@ contract TestRebaseToken is Test {
         assertGt(ethBalance, depositAmount);
     }
 
+    function testTransferAndInterestRate(uint256 amount) public roleGranted {
+        amount = bound(amount, 1, INITIAL_MINT_AMOUNT);
+        vm.startPrank(USER);
+        rbt.mint(USER, INITIAL_MINT_AMOUNT);
+        rbt.transfer(USER2, amount);
+        vm.stopPrank();
+        uint256 user2Balance = rbt.balanceOf(USER2);
+        uint256 globalInterestRate = rbt.getInterestRate();
+        uint256 user2InterestRate = rbt.getUsersInterestRate(USER2);
+
+        assertEq(user2InterestRate, globalInterestRate);
+        assertEq(user2Balance, amount);
+    }
+
     function addRewardsToVault(uint256 amount) public {
         (bool success,) = payable(address(vault)).call{value: amount}("");
-        if(!success) revert("Transfer_Failed");
+        if (!success) revert("Transfer_Failed");
     }
 
     modifier onlyOwner() {
