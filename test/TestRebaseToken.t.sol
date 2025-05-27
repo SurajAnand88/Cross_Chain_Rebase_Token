@@ -25,7 +25,7 @@ contract TestRebaseToken is Test {
         (rbt, vault) = deployer.run();
         vm.prank(msg.sender);
         rbt.transferOwnership(OWNER);
-        vm.deal(USER, 100 ether);
+        // vm.deal(USER, 100 ether);
     }
 
     function testCheckBalance() public mintToken {
@@ -127,6 +127,33 @@ contract TestRebaseToken is Test {
         assertEq(userBalance, 0);
 
         vm.stopPrank();
+    }
+
+    function testVaultRedeemAfterSomeTimePassed(uint256 depositAmount, uint256 time) public roleGranted {
+        depositAmount = bound(depositAmount, 1e5, type(uint24).max);
+        time = bound(time, 1000, type(uint64).max);
+
+        vm.deal(USER, depositAmount);
+        vm.prank(USER);
+        vault.deposite{value: depositAmount}();
+
+        vm.warp(block.timestamp + time);
+        uint256 balanceAfterTimePassed = rbt.balanceOf(USER);
+
+        vm.prank(OWNER);
+        vm.deal(OWNER, balanceAfterTimePassed - depositAmount);
+        addRewardsToVault(balanceAfterTimePassed - depositAmount);
+
+        vm.prank(USER);
+        vault.redeem(type(uint256).max);
+
+        uint256 ethBalance = address(USER).balance;
+        assertEq(ethBalance, balanceAfterTimePassed);
+        assertGt(ethBalance, depositAmount);
+    }
+
+    function addRewardsToVault(uint256 amount) public {
+        (bool success,) = payable(address(vault)).call{value: amount}("");
     }
 
     modifier onlyOwner() {
