@@ -118,7 +118,6 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
         if (balanceOf(_to) == 0) {
             s_usersInterestRate[_to] = s_usersInterestRate[msg.sender];
         }
-
         return super.transfer(_to, _amount);
     }
 

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {DeployRebaseToken} from "script/DeployRebaseToken.s.sol";
 import {RebaseToken} from "src/RebaseToken.sol";
 import {Vault} from "src/Vault.sol";
@@ -164,6 +165,32 @@ contract TestRebaseToken is Test {
 
         assertEq(user2InterestRate, globalInterestRate);
         assertEq(user2Balance, amount);
+    }
+
+    function testTransferFrom(uint256 amount) public roleGranted mintToken {
+        amount = bound(amount, 1, INITIAL_MINT_AMOUNT);
+        rbt.approve(OWNER, amount);
+        vm.stopPrank();
+        vm.prank(OWNER);
+        rbt.transferFrom(USER, USER2, amount);
+        uint256 user2Bal = rbt.balanceOf(USER2);
+        assertEq(user2Bal, amount);
+    }
+
+    function testPrincipalBalanceOfTheUser(uint256 amount) public roleGranted {
+        amount = bound(amount, 1, INITIAL_MINT_AMOUNT);
+        vm.startPrank(USER);
+        rbt.mint(USER, amount);
+        uint256 futureTime = block.timestamp + INTEREST_CALCULATION_TIME;
+        vm.warp(futureTime);
+
+        uint256 balAfterSomeTime = rbt.balanceOf(USER);
+        rbt.mint(USER, 0);
+        uint256 principalBal = rbt.principalBalanceOf(USER);
+        vm.stopPrank();
+        uint256 userLastTimeStamp = rbt.getUsersLastUpdatedTimeStamp(USER);
+        assertEq(principalBal, balAfterSomeTime);
+        assertEq(userLastTimeStamp,futureTime);
     }
 
     function addRewardsToVault(uint256 amount) public {
