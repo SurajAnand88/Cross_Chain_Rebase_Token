@@ -20,7 +20,8 @@ contract Vault {
      * @notice this function will deposite the ETH and mint rebase Token
      */
     function deposite() external payable {
-        RebaseToken(i_rebaseToken).mint(msg.sender, msg.value);
+        uint256 interestRate = RebaseToken(i_rebaseToken).getInterestRate();
+        RebaseToken(i_rebaseToken).mint(msg.sender, msg.value, interestRate);
         emit Deposited(msg.sender, msg.value);
     }
 

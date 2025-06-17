@@ -1,10 +1,10 @@
 Compiling 34 files with Solc 0.8.28
-Solc 0.8.28 finished in 2.18s
+Solc 0.8.28 finished in 2.81s
 Compiler run successful!
 Analysing contracts...
 Running tests...
 
-Ran 14 tests for test/TestRebaseToken.t.sol:TestRebaseToken
+Ran 15 tests for test/TestRebaseToken.t.sol:TestRebaseToken
 [PASS] testBurn() (gas: 155650)
 [PASS] testCheckBalance() (gas: 159618)
 [PASS] testCheckCalculateUsersAccumulatedInterestSinceLastUpdate() (gas: 147358)
@@ -12,16 +12,17 @@ Ran 14 tests for test/TestRebaseToken.t.sol:TestRebaseToken
 [PASS] testGrantRole() (gas: 44315)
 [PASS] testMint() (gas: 173946)
 [PASS] testNameAndSymbol() (gas: 13301)
-[PASS] testPrincipalBalanceOfTheUser(uint256) (runs: 260, μ: 194747, ~: 194084)
-[PASS] testSetInterestRate() (gas: 20770)
-[PASS] testTestVaultDeposite(uint256) (runs: 260, μ: 201235, ~: 201300)
-[PASS] testTransferAndInterestRate(uint256) (runs: 260, μ: 267903, ~: 267393)
-[PASS] testTransferFrom(uint256) (runs: 260, μ: 275500, ~: 274990)
-[PASS] testVaultRedeem(uint256) (runs: 260, μ: 172998, ~: 173063)
-[PASS] testVaultRedeemAfterSomeTimePassed(uint256,uint256) (runs: 260, μ: 210642, ~: 210194)
-Suite result: ok. 14 passed; 0 failed; 0 skipped; finished in 109.54ms (559.69ms CPU time)
+[PASS] testPrincipalBalanceOfTheUser(uint256) (runs: 260, μ: 194743, ~: 194084)
+[PASS] testRebaseTokenAddress() (gas: 11229)
+[PASS] testSetInterestRate() (gas: 20859)
+[PASS] testTestVaultDeposite(uint256) (runs: 260, μ: 201230, ~: 201300)
+[PASS] testTransferAndInterestRate(uint256) (runs: 260, μ: 267899, ~: 267393)
+[PASS] testTransferFrom(uint256) (runs: 260, μ: 275496, ~: 274990)
+[PASS] testVaultRedeem(uint256) (runs: 260, μ: 172971, ~: 173041)
+[PASS] testVaultRedeemAfterSomeTimePassed(uint256,uint256) (runs: 260, μ: 210633, ~: 210194)
+Suite result: ok. 15 passed; 0 failed; 0 skipped; finished in 123.06ms (700.24ms CPU time)
 
-Ran 1 test suite in 110.85ms (109.54ms CPU time): 14 tests passed, 0 failed, 0 skipped (14 total tests)
+Ran 1 test suite in 125.33ms (123.06ms CPU time): 15 tests passed, 0 failed, 0 skipped (15 total tests)
 Uncovered for script/DeployRebaseToken.s.sol:
 
 Uncovered for src/RebaseToken.sol:
@@ -40,72 +41,40 @@ Uncovered for src/RebaseToken.sol:
 Uncovered for src/Vault.sol:
 - Branch (branch: 1, path: 0) (location: source ID 32, lines 37..38, bytes 1128..1158, hits: 0)
 - Statement (location: source ID 32, lines 37..38, bytes 1128..1158, hits: 0)
-- Line (location: source ID 32, lines 43..46, bytes 1253..1355, hits: 0)
-- Function "getRebaseTokenAddress" (location: source ID 32, lines 43..46, bytes 1253..1355, hits: 0)
-- Line (location: source ID 32, lines 44..45, bytes 1328..1348, hits: 0)
-- Statement (location: source ID 32, lines 44..45, bytes 1328..1348, hits: 0)
-
-Anchors for Contract "StdInvariant" (solc 0.8.28, source ID 7):
-
-Anchors for Contract "StdStyle" (solc 0.8.28, source ID 11):
 
 Anchors for Contract "ScriptBase" (solc 0.8.28, source ID 0):
 
-Anchors for Contract "IMulticall3" (solc 0.8.28, source ID 18):
+Anchors for Contract "safeconsole" (solc 0.8.28, source ID 19):
 
-Anchors for Contract "StdUtils" (solc 0.8.28, source ID 13):
+Anchors for Contract "StdCheatsSafe" (solc 0.8.28, source ID 4):
 
-Anchors for Contract "DeployRebaseToken" (solc 0.8.28, source ID 30):
-- IC 56 -> Item 0
-- Creation code
-  - Refers to item: Line (location: source ID 30, lines 9..16, bytes 233..471, hits: 14)
-- IC 56 -> Item 1
-- Creation code
-  - Refers to item: Function "run" (location: source ID 30, lines 9..16, bytes 233..471, hits: 14)
-- IC 141 -> Item 2
-- Creation code
-  - Refers to item: Line (location: source ID 30, lines 10..11, bytes 296..315, hits: 14)
-- IC 141 -> Item 3
-- Creation code
-  - Refers to item: Statement (location: source ID 30, lines 10..11, bytes 296..315, hits: 14)
-- IC 231 -> Item 4
-- Creation code
-  - Refers to item: Line (location: source ID 30, lines 11..12, bytes 325..360, hits: 14)
-- IC 231 -> Item 5
-- Creation code
-  - Refers to item: Statement (location: source ID 30, lines 11..12, bytes 325..360, hits: 14)
-- IC 232 -> Item 6
-- Creation code
-  - Refers to item: Statement (location: source ID 30, lines 11..12, bytes 343..360, hits: 14)
-- IC 272 -> Item 7
-- Creation code
-  - Refers to item: Line (location: source ID 30, lines 12..13, bytes 370..407, hits: 14)
-- IC 272 -> Item 8
-- Creation code
-  - Refers to item: Statement (location: source ID 30, lines 12..13, bytes 370..407, hits: 14)
-- IC 273 -> Item 9
-- Creation code
-  - Refers to item: Statement (location: source ID 30, lines 12..13, bytes 384..407, hits: 14)
-- IC 345 -> Item 10
-- Creation code
-  - Refers to item: Line (location: source ID 30, lines 13..14, bytes 417..435, hits: 14)
-- IC 345 -> Item 11
-- Creation code
-  - Refers to item: Statement (location: source ID 30, lines 13..14, bytes 417..435, hits: 14)
-- IC 435 -> Item 12
-- Creation code
-  - Refers to item: Line (location: source ID 30, lines 14..15, bytes 445..464, hits: 14)
-- IC 435 -> Item 13
-- Creation code
-  - Refers to item: Statement (location: source ID 30, lines 14..15, bytes 445..464, hits: 14)
+Anchors for Contract "stdToml" (solc 0.8.28, source ID 12):
 
-Anchors for Contract "console" (solc 0.8.28, source ID 16):
+Anchors for Contract "StdInvariant" (solc 0.8.28, source ID 7):
 
-Anchors for Contract "stdMath" (solc 0.8.28, source ID 9):
+Anchors for Contract "IERC20" (solc 0.8.28, source ID 25):
 
-Anchors for Contract "StdChains" (solc 0.8.28, source ID 3):
+Anchors for Contract "Context" (solc 0.8.28, source ID 27):
 
-Anchors for Contract "IERC165" (solc 0.8.28, source ID 29):
+Anchors for Contract "ERC20" (solc 0.8.28, source ID 24):
+
+Anchors for Contract "IERC1155Errors" (solc 0.8.28, source ID 23):
+
+Anchors for Contract "stdJson" (solc 0.8.28, source ID 8):
+
+Anchors for Contract "stdError" (solc 0.8.28, source ID 6):
+
+Anchors for Contract "ERC165" (solc 0.8.28, source ID 28):
+
+Anchors for Contract "VmSafe" (solc 0.8.28, source ID 15):
+
+Anchors for Contract "Script" (solc 0.8.28, source ID 1):
+
+Anchors for Contract "StdCheats" (solc 0.8.28, source ID 4):
+
+Anchors for Contract "IERC721Errors" (solc 0.8.28, source ID 23):
+
+Anchors for Contract "Ownable" (solc 0.8.28, source ID 22):
 
 Anchors for Contract "RebaseToken" (solc 0.8.28, source ID 31):
 - IC 2568 -> Item 14
@@ -505,19 +474,99 @@ Anchors for Contract "RebaseToken" (solc 0.8.28, source ID 31):
 - Creation code
   - Refers to item: Statement (location: source ID 31, lines 212..213, bytes 8566..8622, hits: 1)
 
+Anchors for Contract "Test" (solc 0.8.28, source ID 14):
+
+Anchors for Contract "IMulticall3" (solc 0.8.28, source ID 18):
+
+Anchors for Contract "IERC20Errors" (solc 0.8.28, source ID 23):
+
+Anchors for Contract "StdChains" (solc 0.8.28, source ID 3):
+
+Anchors for Contract "StdUtils" (solc 0.8.28, source ID 13):
+
+Anchors for Contract "IERC165" (solc 0.8.28, source ID 29):
+
+Anchors for Contract "StdStyle" (solc 0.8.28, source ID 11):
+
+Anchors for Contract "TestBase" (solc 0.8.28, source ID 0):
+
+Anchors for Contract "IAccessControl" (solc 0.8.28, source ID 21):
+
+Anchors for Contract "Vm" (solc 0.8.28, source ID 15):
+
+Anchors for Contract "stdMath" (solc 0.8.28, source ID 9):
+
+Anchors for Contract "TestRebaseToken" (solc 0.8.28, source ID 33):
+
+Anchors for Contract "DeployRebaseToken" (solc 0.8.28, source ID 30):
+- IC 56 -> Item 0
+- Creation code
+  - Refers to item: Line (location: source ID 30, lines 9..16, bytes 233..471, hits: 15)
+- IC 56 -> Item 1
+- Creation code
+  - Refers to item: Function "run" (location: source ID 30, lines 9..16, bytes 233..471, hits: 15)
+- IC 141 -> Item 2
+- Creation code
+  - Refers to item: Line (location: source ID 30, lines 10..11, bytes 296..315, hits: 15)
+- IC 141 -> Item 3
+- Creation code
+  - Refers to item: Statement (location: source ID 30, lines 10..11, bytes 296..315, hits: 15)
+- IC 231 -> Item 4
+- Creation code
+  - Refers to item: Line (location: source ID 30, lines 11..12, bytes 325..360, hits: 15)
+- IC 231 -> Item 5
+- Creation code
+  - Refers to item: Statement (location: source ID 30, lines 11..12, bytes 325..360, hits: 15)
+- IC 232 -> Item 6
+- Creation code
+  - Refers to item: Statement (location: source ID 30, lines 11..12, bytes 343..360, hits: 15)
+- IC 272 -> Item 7
+- Creation code
+  - Refers to item: Line (location: source ID 30, lines 12..13, bytes 370..407, hits: 15)
+- IC 272 -> Item 8
+- Creation code
+  - Refers to item: Statement (location: source ID 30, lines 12..13, bytes 370..407, hits: 15)
+- IC 273 -> Item 9
+- Creation code
+  - Refers to item: Statement (location: source ID 30, lines 12..13, bytes 384..407, hits: 15)
+- IC 345 -> Item 10
+- Creation code
+  - Refers to item: Line (location: source ID 30, lines 13..14, bytes 417..435, hits: 15)
+- IC 345 -> Item 11
+- Creation code
+  - Refers to item: Statement (location: source ID 30, lines 13..14, bytes 417..435, hits: 15)
+- IC 435 -> Item 12
+- Creation code
+  - Refers to item: Line (location: source ID 30, lines 14..15, bytes 445..464, hits: 15)
+- IC 435 -> Item 13
+- Creation code
+  - Refers to item: Statement (location: source ID 30, lines 14..15, bytes 445..464, hits: 15)
+
+Anchors for Contract "console" (solc 0.8.28, source ID 16):
+
+Anchors for Contract "IERC20Metadata" (solc 0.8.28, source ID 26):
+
+Anchors for Contract "stdStorageSafe" (solc 0.8.28, source ID 10):
+
+Anchors for Contract "CommonBase" (solc 0.8.28, source ID 0):
+
+Anchors for Contract "AccessControl" (solc 0.8.28, source ID 20):
+
+Anchors for Contract "stdStorage" (solc 0.8.28, source ID 10):
+
 Anchors for Contract "Vault" (solc 0.8.28, source ID 32):
 - IC 5 -> Item 146
 - Runtime code
-  - Refers to item: Line (location: source ID 32, lines 13..16, bytes 277..354, hits: 14)
+  - Refers to item: Line (location: source ID 32, lines 13..16, bytes 277..354, hits: 15)
 - IC 5 -> Item 147
 - Runtime code
-  - Refers to item: Function "constructor" (location: source ID 32, lines 13..16, bytes 277..354, hits: 14)
+  - Refers to item: Function "constructor" (location: source ID 32, lines 13..16, bytes 277..354, hits: 15)
 - IC 50 -> Item 148
 - Runtime code
-  - Refers to item: Line (location: source ID 32, lines 14..15, bytes 320..347, hits: 14)
+  - Refers to item: Line (location: source ID 32, lines 14..15, bytes 320..347, hits: 15)
 - IC 50 -> Item 149
 - Runtime code
-  - Refers to item: Statement (location: source ID 32, lines 14..15, bytes 320..347, hits: 14)
+  - Refers to item: Statement (location: source ID 32, lines 14..15, bytes 320..347, hits: 15)
 - IC 108 -> Item 150
 - Creation code
   - Refers to item: Line (location: source ID 32, lines 22..26, bytes 484..639, hits: 780)
@@ -586,70 +635,18 @@ Anchors for Contract "Vault" (solc 0.8.28, source ID 32):
   - Refers to item: Statement (location: source ID 32, lines 37..38, bytes 1128..1158, hits: 0)
 - IC 66 -> Item 172
 - Creation code
-  - Refers to item: Line (location: source ID 32, lines 43..46, bytes 1253..1355, hits: 0)
+  - Refers to item: Line (location: source ID 32, lines 43..46, bytes 1253..1355, hits: 1)
 - IC 66 -> Item 173
 - Creation code
-  - Refers to item: Function "getRebaseTokenAddress" (location: source ID 32, lines 43..46, bytes 1253..1355, hits: 0)
+  - Refers to item: Function "getRebaseTokenAddress" (location: source ID 32, lines 43..46, bytes 1253..1355, hits: 1)
 - IC 160 -> Item 174
 - Creation code
-  - Refers to item: Line (location: source ID 32, lines 44..45, bytes 1328..1348, hits: 0)
+  - Refers to item: Line (location: source ID 32, lines 44..45, bytes 1328..1348, hits: 1)
 - IC 160 -> Item 175
 - Creation code
-  - Refers to item: Statement (location: source ID 32, lines 44..45, bytes 1328..1348, hits: 0)
-
-Anchors for Contract "IERC721Errors" (solc 0.8.28, source ID 23):
-
-Anchors for Contract "Context" (solc 0.8.28, source ID 27):
-
-Anchors for Contract "TestBase" (solc 0.8.28, source ID 0):
-
-Anchors for Contract "IERC20" (solc 0.8.28, source ID 25):
-
-Anchors for Contract "Ownable" (solc 0.8.28, source ID 22):
-
-Anchors for Contract "TestRebaseToken" (solc 0.8.28, source ID 33):
-
-Anchors for Contract "IERC20Errors" (solc 0.8.28, source ID 23):
-
-Anchors for Contract "AccessControl" (solc 0.8.28, source ID 20):
-
-Anchors for Contract "CommonBase" (solc 0.8.28, source ID 0):
-
-Anchors for Contract "stdStorageSafe" (solc 0.8.28, source ID 10):
-
-Anchors for Contract "stdToml" (solc 0.8.28, source ID 12):
-
-Anchors for Contract "Vm" (solc 0.8.28, source ID 15):
-
-Anchors for Contract "StdCheatsSafe" (solc 0.8.28, source ID 4):
-
-Anchors for Contract "StdConstants" (solc 0.8.28, source ID 5):
-
-Anchors for Contract "safeconsole" (solc 0.8.28, source ID 19):
-
-Anchors for Contract "IERC1155Errors" (solc 0.8.28, source ID 23):
-
-Anchors for Contract "VmSafe" (solc 0.8.28, source ID 15):
-
-Anchors for Contract "IERC20Metadata" (solc 0.8.28, source ID 26):
-
-Anchors for Contract "stdJson" (solc 0.8.28, source ID 8):
-
-Anchors for Contract "StdCheats" (solc 0.8.28, source ID 4):
-
-Anchors for Contract "stdError" (solc 0.8.28, source ID 6):
-
-Anchors for Contract "Test" (solc 0.8.28, source ID 14):
-
-Anchors for Contract "Script" (solc 0.8.28, source ID 1):
+  - Refers to item: Statement (location: source ID 32, lines 44..45, bytes 1328..1348, hits: 1)
 
 Anchors for Contract "StdAssertions" (solc 0.8.28, source ID 2):
 
-Anchors for Contract "IAccessControl" (solc 0.8.28, source ID 21):
-
-Anchors for Contract "ERC165" (solc 0.8.28, source ID 28):
-
-Anchors for Contract "ERC20" (solc 0.8.28, source ID 24):
-
-Anchors for Contract "stdStorage" (solc 0.8.28, source ID 10):
+Anchors for Contract "StdConstants" (solc 0.8.28, source ID 5):
 

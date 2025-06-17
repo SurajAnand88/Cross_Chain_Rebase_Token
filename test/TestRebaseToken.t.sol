@@ -18,6 +18,7 @@ contract TestRebaseToken is Test {
     uint256 public constant INITIAL_BURN_TOKEN = 100e18;
     uint256 public constant PRECISION_FACTOR = 1e18;
     uint256 public constant INTEREST_CALCULATION_TIME = 1 hours;
+    uint256 public interestRate;
 
     event InterestRateSet(uint256 indexed intereseRate);
 
@@ -27,6 +28,7 @@ contract TestRebaseToken is Test {
         vm.prank(msg.sender);
         rbt.transferOwnership(OWNER);
         vm.deal(USER, 100 ether);
+        interestRate = rbt.getInterestRate();
     }
 
     function testCheckBalance() public mintToken {
@@ -70,7 +72,7 @@ contract TestRebaseToken is Test {
 
     function testMint() public roleGranted {
         vm.startPrank(USER);
-        rbt.mint(USER, INITIAL_MINT_AMOUNT);
+        rbt.mint(USER, INITIAL_MINT_AMOUNT, interestRate);
         uint256 currentBalance = rbt.balanceOf(USER);
         assertEq(currentBalance, INITIAL_MINT_AMOUNT);
     }
@@ -83,7 +85,6 @@ contract TestRebaseToken is Test {
 
     function testCheckCalculateUsersAccumulatedInterestSinceLastUpdate() public mintToken {
         uint256 currentTime = block.timestamp;
-        uint256 interestRate = rbt.getInterestRate();
         uint256 futuretime = currentTime + INTEREST_CALCULATION_TIME;
         vm.warp(futuretime);
         uint256 expectedCalculatedInterest = (PRECISION_FACTOR + (interestRate) * (futuretime - currentTime));
@@ -156,7 +157,7 @@ contract TestRebaseToken is Test {
     function testTransferAndInterestRate(uint256 amount) public roleGranted {
         amount = bound(amount, 1, INITIAL_MINT_AMOUNT);
         vm.startPrank(USER);
-        rbt.mint(USER, INITIAL_MINT_AMOUNT);
+        rbt.mint(USER, INITIAL_MINT_AMOUNT, interestRate);
         rbt.transfer(USER2, amount);
         vm.stopPrank();
         uint256 user2Balance = rbt.balanceOf(USER2);
@@ -180,17 +181,23 @@ contract TestRebaseToken is Test {
     function testPrincipalBalanceOfTheUser(uint256 amount) public roleGranted {
         amount = bound(amount, 1, INITIAL_MINT_AMOUNT);
         vm.startPrank(USER);
-        rbt.mint(USER, amount);
+
+        rbt.mint(USER, amount, interestRate);
         uint256 futureTime = block.timestamp + INTEREST_CALCULATION_TIME;
         vm.warp(futureTime);
 
         uint256 balAfterSomeTime = rbt.balanceOf(USER);
-        rbt.mint(USER, 0);
+        rbt.mint(USER, 0, interestRate);
         uint256 principalBal = rbt.principalBalanceOf(USER);
         vm.stopPrank();
         uint256 userLastTimeStamp = rbt.getUsersLastUpdatedTimeStamp(USER);
         assertEq(principalBal, balAfterSomeTime);
-        assertEq(userLastTimeStamp,futureTime);
+        assertEq(userLastTimeStamp, futureTime);
+    }
+
+    function testRebaseTokenAddress() public view {
+        address rebaseToken = vault.getRebaseTokenAddress();
+        assertEq(address(rbt), rebaseToken);
     }
 
     function addRewardsToVault(uint256 amount) public {
@@ -215,7 +222,7 @@ contract TestRebaseToken is Test {
         vm.prank(OWNER);
         rbt.grantRole(USER);
         vm.startPrank(USER);
-        rbt.mint(USER, INITIAL_MINT_AMOUNT);
+        rbt.mint(USER, INITIAL_MINT_AMOUNT, interestRate);
         _;
     }
 }
