@@ -10,6 +10,8 @@ import {CCIPLocalSimulatorFork, Register} from "../lib/chainlink-local/src/ccip/
 import {RegistryModuleOwnerCustom} from
     "../lib/ccip/contracts/src/v0.8/ccip/tokenAdminRegistry/RegistryModuleOwnerCustom.sol";
 import {TokenAdminRegistry} from "../lib/ccip/contracts/src/v0.8/ccip/tokenAdminRegistry/TokenAdminRegistry.sol";
+import {TokenPool} from "../lib/ccip/contracts/src/v0.8/ccip/pools/TokenPool.sol";
+import {RateLimiter} from "../lib/ccip/contracts/src/v0.8/ccip/libraries/RateLimiter.sol";
 
 contract CrossChainTest is Test {
     address private owner = makeAddr("Owner");
@@ -73,6 +75,43 @@ contract CrossChainTest is Test {
         TokenAdminRegistry(sepoliaNetworkDetails.tokenAdminRegistryAddress).setPool(
             address(arbToken), address(arbSepoliaTokenPool)
         );
+        configureTokenPool(
+            sepoliaFork,
+            address(sepoliaTokenPool),
+            arbSepoliaNetworkDetails.chainSelector,
+            address(arbSepoliaTokenPool),
+            address(arbToken)
+        );
+        configureTokenPool(
+            arbSepoliaFork,
+            address(arbSepoliaTokenPool),
+            sepoliaNetworkDetails.chainSelector,
+            address(sepoliaTokenPool),
+            address(sepoliaToken)
+        );
+
         vm.stopPrank();
+    }
+
+    function configureTokenPool(
+        uint256 fork,
+        address tokenPool,
+        uint64 remoteChainSelector,
+        address remotePool,
+        address remoteTokenAddress
+    ) public {
+        vm.selectFork(fork);
+        vm.startPrank(owner);
+        TokenPool.ChainUpdate[] memory chainsToAdd = new TokenPool.ChainUpdate[](1);
+        bytes[] memory remotePoolAddresses = new bytes[](1);
+        remotePoolAddresses[0] = abi.encode(remotePool);
+        chainsToAdd[0] = TokenPool.ChainUpdate({
+            remoteChainSelector: remoteChainSelector,
+            remotePoolAddresses: remotePoolAddresses,
+            remoteTokenAddress: abi.encode(remoteTokenAddress),
+            outboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0}),
+            inboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0})
+        });
+        TokenPool(tokenPool).applyChainUpdates(new uint64[](0), chainsToAdd);
     }
 }
