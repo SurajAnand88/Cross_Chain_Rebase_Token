@@ -154,5 +154,17 @@ contract CrossChainTest is Test {
         vm.prank(user);
         IRouterClient(localNetworkDetails.routerAddress).ccipSend(remoteNetworkDetails.chainSelector, message);
         uint256 localTokenBalanceAfter = localToken.balanceOf(user);
+        assertEq(localTokenBalanceAfter, localTokenBalanceBefore - amountToBridge);
+        uint256 localInterestRate = localToken.getUsersInterestRate(user);
+
+
+        vm.selectFork(remoteFork);
+        vm.warp(block.timestamp + 20 minutes);
+        uint256 remoteBalanceBefore = remoteToken.balanceOf(user);
+        ccipLocalSimulatorFork.switchChainAndRouteMessage(remoteFork);
+        uint256 remoteBalanceAfter = remoteToken.balanceOf(user);
+        assertEq(remoteBalanceBefore, remoteBalanceAfter- amountToBridge);
+        uint256 remoteInterestRate = remoteToken.getUsersInterestRate(user);
+        assertEq(localInterestRate,remoteInterestRate);
     }
 }
