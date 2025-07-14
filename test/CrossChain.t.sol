@@ -32,6 +32,7 @@ contract CrossChainTest is Test {
     Register.NetworkDetails arbSepoliaNetworkDetails;
 
     address public user = makeAddr("User");
+    uint256 public SEND_VALUE = 1e5;
 
     function setUp() public {
         sepoliaFork = vm.createSelectFork("sepolia-eth");
@@ -93,7 +94,6 @@ contract CrossChainTest is Test {
             address(sepoliaTokenPool),
             address(sepoliaToken)
         );
-
         vm.stopPrank();
     }
 
@@ -157,14 +157,42 @@ contract CrossChainTest is Test {
         assertEq(localTokenBalanceAfter, localTokenBalanceBefore - amountToBridge);
         uint256 localInterestRate = localToken.getUsersInterestRate(user);
 
-
         vm.selectFork(remoteFork);
         vm.warp(block.timestamp + 20 minutes);
         uint256 remoteBalanceBefore = remoteToken.balanceOf(user);
         ccipLocalSimulatorFork.switchChainAndRouteMessage(remoteFork);
         uint256 remoteBalanceAfter = remoteToken.balanceOf(user);
-        assertEq(remoteBalanceBefore, remoteBalanceAfter- amountToBridge);
+        assertEq(remoteBalanceBefore, remoteBalanceAfter - amountToBridge);
         uint256 remoteInterestRate = remoteToken.getUsersInterestRate(user);
-        assertEq(localInterestRate,remoteInterestRate);
+        assertEq(localInterestRate, remoteInterestRate);
+    }
+
+    function testBridgeAllTokens() public {
+        vm.selectFork(sepoliaFork);
+        vm.deal(user, SEND_VALUE);
+        vm.prank(user);
+        Vault(payable(address(vault))).deposite{value: SEND_VALUE}();
+        assertEq(sepoliaToken.balanceOf(user), SEND_VALUE);
+        bridgeTokens(
+            SEND_VALUE,
+            sepoliaFork,
+            arbSepoliaFork,
+            sepoliaNetworkDetails,
+            arbSepoliaNetworkDetails,
+            sepoliaToken,
+            arbToken
+        );
+
+        vm.selectFork(arbSepoliaFork);
+        vm.warp(block.timestamp + 20 minutes);
+        bridgeTokens(
+            SEND_VALUE,
+            arbSepoliaFork,
+            sepoliaFork,
+            arbSepoliaNetworkDetails,
+            sepoliaNetworkDetails,
+            arbToken,
+            sepoliaToken
+        );
     }
 }
